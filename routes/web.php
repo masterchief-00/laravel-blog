@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,11 +20,23 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/blog',[BlogController::class,'index']);
-Route::get('/blog/post',[BlogController::class,'show']);
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
 
-Route::get('/about', function(){
+// To welcome page
+Route::get('/', [WelcomeController::class, 'index'])->name('home');
+
+// To blog page
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+// To about page
+Route::get('/about', function () {
     return view('about');
-});
+})->name('about');
+// To contact page
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+// To single blog post
+Route::get('/blog/post', [BlogController::class, 'show'])->name('post.show');
 
-Route::get('/contact',[ContactController::class,'index']);
+
+require __DIR__ . '/auth.php';
