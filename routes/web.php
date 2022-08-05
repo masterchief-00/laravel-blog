@@ -35,10 +35,12 @@ Route::get('/about', function () {
 })->name('about');
 // To contact page
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
-// To single blog post
-Route::get('/blog/post', [BlogController::class, 'show'])->name('post.show');
+
 //create blog post
 Route::get('/blog/create',[BlogController::class,'create'])->name('post.create');
+
+// To single blog post
+Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('post.show');
 
 Route::post('/blog',[BlogController::class,'store'])->name('post.store');
 

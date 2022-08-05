@@ -18,9 +18,9 @@ class BlogController extends Controller
             'image' => 'required|image',
             'body' => 'required'
         ]);
-
+        $postId=Post::latest()->take(1)->first()->id;
         $title = $request->input('title');
-        $slug = Str::slug($title, '-');
+        $slug = Str::slug($title, '-').'-'.$postId+1;
         $user_id = Auth::user()->id;
         $body = $request->input('body');
 
@@ -34,7 +34,7 @@ class BlogController extends Controller
         $post->imagePath = $imagePath;
         $post->save();
 
-        return redirect()->back();
+        return redirect()->back()->with('status','Post created!');
     }
     function create()
     {
@@ -42,10 +42,12 @@ class BlogController extends Controller
     }
     function index()
     {
-        return view('blogPost.blog');
+        $posts=Post::latest()->get();
+        return view('blogPost.blog',compact('posts'));
     }
-    function show()
-    {
-        return view('blogPost.blog-post');
+    function show($slug)
+    {   
+        $post=Post::where('slug',$slug)->first();
+        return view('blogPost.blog-post',compact('post'));
     }
 }
