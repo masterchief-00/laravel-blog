@@ -26,6 +26,16 @@
 
             @foreach ($posts as $post)
                 <div class="card-blog-content">
+                    @auth
+                        @if (auth()->user()->id == $post->user->id)
+                            <div class="post-buttons">
+                                <a href="{{ route('post.edit',$post) }}">Edit</a>
+                                <form action="">
+                                    <input type="submit" value="Delete">
+                                </form>
+                            </div>
+                        @endif
+                    @endauth
                     <img src="{{ asset($post->imagePath) }}" alt="" />
                     <p>
                         {{ $post->created_at->diffForHumans() }}
@@ -50,5 +60,4 @@
         </div>
         <br>
     </main>
-
 @endsection

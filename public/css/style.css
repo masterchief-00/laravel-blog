@@ -551,3 +551,25 @@ textarea {
   border-radius: 8px;
   padding: 10px;
 }
+.post-buttons
+{
+  padding: 10px;
+}
+.post-buttons a{
+  display: inline-flex;
+  background-color: green;
+  color: white;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 10px;
+}
+.post-buttons input{
+  background-color: red;
+  color: white;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 11.8px;
+}
+.post-buttons form{
+  display: inline-flex;
+}

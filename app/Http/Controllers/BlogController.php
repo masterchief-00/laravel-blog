@@ -9,6 +9,49 @@ use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['index']);
+    }
+
+    function update(Request $request, Post $post)
+    {
+
+        if(auth()->user()->id!=$post->user()->id)
+        {
+            abort(403);
+        }
+
+
+        $request->validate([
+            'title' => 'required',
+            'image' => 'required|image',
+            'body' => 'required'
+        ]);
+        $postId = $post->id;
+        $title = $request->input('title');
+        $slug = Str::slug($title, '-') . '-' . $postId;
+        $body = $request->input('body');
+
+        //file upload
+        $imagePath = 'storage/' . $request->file('image')->store('postImages', 'public');
+
+        $post->title = $title;
+        $post->slug = $slug;
+        $post->body = $body;
+        $post->imagePath = $imagePath;
+        $post->update();
+
+        return redirect()->back()->with('status', 'Post updated!');
+    }
+    function edit(Post $post)
+    {
+        if(auth()->user()->id!=$post->user()->id)
+        {
+            abort(403);
+        }        
+        return view('blogPost.edit-post', compact('post'));
+    }
     function store(Request $request)
     {
         $post = new Post();
@@ -18,9 +61,9 @@ class BlogController extends Controller
             'image' => 'required|image',
             'body' => 'required'
         ]);
-        $postId=Post::latest()->take(1)->first()->id;
+        $postId = Post::latest()->take(1)->first()->id;
         $title = $request->input('title');
-        $slug = Str::slug($title, '-').'-'.$postId+1;
+        $slug = Str::slug($title, '-') . '-' . $postId + 1;
         $user_id = Auth::user()->id;
         $body = $request->input('body');
 
@@ -34,7 +77,7 @@ class BlogController extends Controller
         $post->imagePath = $imagePath;
         $post->save();
 
-        return redirect()->back()->with('status','Post created!');
+        return redirect()->back()->with('status', 'Post created!');
     }
     function create()
     {
@@ -42,12 +85,12 @@ class BlogController extends Controller
     }
     function index()
     {
-        $posts=Post::latest()->get();
-        return view('blogPost.blog',compact('posts'));
+        $posts = Post::latest()->get();
+        return view('blogPost.blog', compact('posts'));
     }
     function show($slug)
-    {   
-        $post=Post::where('slug',$slug)->first();
-        return view('blogPost.blog-post',compact('post'));
+    {
+        $post = Post::where('slug', $slug)->first();
+        return view('blogPost.blog-post', compact('post'));
     }
 }

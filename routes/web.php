@@ -33,16 +33,17 @@ Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/about', function () {
     return view('about');
 })->name('about');
-// To contact page
+
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 
-//create blog post
 Route::get('/blog/create',[BlogController::class,'create'])->name('post.create');
 
-// To single blog post
 Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('post.show');
 
-Route::post('/blog',[BlogController::class,'store'])->name('post.store');
+Route::get('/blog/{post}/edit',[BlogController::class,'edit'])->name('post.edit');
 
+Route::put('/blog/{post}/update',[[BlogController::class,'update']])->name('post.update');
+
+Route::post('/blog',[BlogController::class,'store'])->name('post.store');
 
 require __DIR__ . '/auth.php';
