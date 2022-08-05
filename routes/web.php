@@ -37,6 +37,10 @@ Route::get('/about', function () {
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 // To single blog post
 Route::get('/blog/post', [BlogController::class, 'show'])->name('post.show');
+//create blog post
+Route::get('/blog/create',[BlogController::class,'create'])->name('post.create');
+
+Route::post('/blog',[BlogController::class,'store'])->name('post.store');
 
 
 require __DIR__ . '/auth.php';
