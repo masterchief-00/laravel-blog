@@ -8,6 +8,7 @@
     <title>Home - Alphayo Blog</title>
     <!-- Css -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     @yield('head')

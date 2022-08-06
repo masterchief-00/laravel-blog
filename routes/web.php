@@ -40,10 +40,12 @@ Route::get('/blog/create',[BlogController::class,'create'])->name('post.create')
 
 Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('post.show');
 
-Route::get('/blog/{post}/edit',[BlogController::class,'edit'])->name('post.edit');
+Route::get('/blog/edit/{post}',[BlogController::class,'edit'])->name('post.edit');
 
-Route::put('/blog/{post}/update',[[BlogController::class,'update']])->name('post.update');
+Route::put('/blog/update/{post}',[[BlogController::class,'update']])->name('post.update');
 
-Route::post('/blog',[BlogController::class,'store'])->name('post.store');
+Route::post('/blog/store',[BlogController::class,'store'])->name('post.store');
+
+Route::delete('/blog/delete/{post}',[BlogController::class,'destroy'])->name('post.destroy');
 
 require __DIR__ . '/auth.php';

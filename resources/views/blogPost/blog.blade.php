@@ -4,6 +4,9 @@
     <!-- main -->
     <main class="container">
         <h2 class="header-title">All Blog Posts</h2>
+        @if (Session('status'))
+            <span class="notify">{{ Session('status') }}</span>
+        @endif
         <div class="searchbar">
             <form action="">
                 <input type="text" placeholder="Search..." name="search" />
@@ -24,13 +27,15 @@
         </div>
         <section class="cards-blog latest-blog">
 
-            @foreach ($posts as $post)
+            @forelse ($posts as $post)
                 <div class="card-blog-content">
                     @auth
                         @if (auth()->user()->id == $post->user->id)
                             <div class="post-buttons">
-                                <a href="{{ route('post.edit',$post) }}">Edit</a>
-                                <form action="">
+                                <a href="{{ route('post.edit', $post) }}">Edit</a>
+                                <form action="{{ route('post.destroy',$post) }}" method="POST">
+                                    @csrf
+                                    @method('delete')
                                     <input type="submit" value="Delete">
                                 </form>
                             </div>
@@ -45,11 +50,14 @@
                         <a href="{{ route('post.show', $post) }}">{{ $post->title }}</a>
                     </h4>
                 </div>
-            @endforeach
+                @empty
+                <p>Sorry, the post you're looking does not exists.</p>
+            @endforelse
         </section>
 
         <!-- pagination -->
-        <div class="pagination" id="pagination">
+        {{$posts->links()}}
+        {{-- <div class="pagination" id="pagination">
             <a href="">&laquo;</a>
             <a class="active" href="">1</a>
             <a href="">2</a>
@@ -57,7 +65,7 @@
             <a href="">4</a>
             <a href="">5</a>
             <a href="">&raquo;</a>
-        </div>
+        </div> --}}
         <br>
     </main>
 @endsection

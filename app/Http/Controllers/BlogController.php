@@ -11,14 +11,19 @@ class BlogController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except(['index']);
+        $this->middleware('auth')->except(['index', 'show']);
     }
 
+
+    function destroy(Post $post)
+    {
+        $post->delete();
+        return redirect()->back()->with('status', 'Post deleted!');
+    }
     function update(Request $request, Post $post)
     {
 
-        if(auth()->user()->id!=$post->user()->id)
-        {
+        if (auth()->user()->id != $post->user()->id) {
             abort(403);
         }
 
@@ -46,10 +51,9 @@ class BlogController extends Controller
     }
     function edit(Post $post)
     {
-        if(auth()->user()->id!=$post->user()->id)
-        {
+        if (auth()->user()->id != $post->user()->id) {
             abort(403);
-        }        
+        }
         return view('blogPost.edit-post', compact('post'));
     }
     function store(Request $request)
@@ -83,9 +87,17 @@ class BlogController extends Controller
     {
         return view('blogPost.create-blog-post');
     }
-    function index()
+    function index(Request $request)
     {
-        $posts = Post::latest()->get();
+        if ($request->search) {
+            $searchQuery = '%' . $request->search . '%';
+            $posts = Post::where('title', 'like', $searchQuery)
+                ->orWhere('body', 'like', $searchQuery)->latest()->paginate(4);
+        }
+        else
+        {
+            $posts = Post::latest()->paginate(4);
+        }        
         return view('blogPost.blog', compact('posts'));
     }
     function show($slug)
