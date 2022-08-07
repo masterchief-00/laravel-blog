@@ -7,9 +7,9 @@
     <main class="container" style="background-color: #fff">
         <section id="contact-us">
             <h1 style="padding-top: 50px">Edit Post</h1>
-            @if (Session('status'))
-                <span class="notify">{{ Session('status') }}</span>
-            @endif
+            
+            @include('includes.flash-message');
+
             <div class="contact-form">
                 <form action="{{ route('post.update', $post) }}" method="POST" enctype="multipart/form-data">
                     @method('put')

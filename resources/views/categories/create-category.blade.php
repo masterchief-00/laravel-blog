@@ -7,9 +7,9 @@
     <main class="container" style="background-color: #fff">
         <section id="contact-us">
             <h1 style="padding-top: 50px">Create New Category</h1>
-            @if (Session('status'))
-                <span class="notify">{{Session('status')}}</span>
-            @endif
+            
+            @include('includes.flash-message');
+
             <div class="contact-form">
                 <form action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf

@@ -7,9 +7,9 @@
     <main class="container" style="background-color: #fff">
         <section id="contact-us">
             <h1 style="padding-top: 50px">Create New Post</h1>
-            @if (Session('status'))
-                <span class="notify">{{Session('status')}}</span>
-            @endif
+
+            @include('includes.flash-message');
+
             <div class="contact-form">
                 <form action="{{ route('post.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
@@ -24,6 +24,17 @@
                         <label for="Image">Image</label>
                         <input type="file" name="image" id="image">
                         @error('image')
+                            <span class="error-bag">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category:</label><br>
+                        <select name="category_id" id="categories">
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('category_id')
                             <span class="error-bag">{{ $message }}</span>
                         @enderror
                     </div>

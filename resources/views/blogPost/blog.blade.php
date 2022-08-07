@@ -4,9 +4,9 @@
     <!-- main -->
     <main class="container">
         <h2 class="header-title">All Blog Posts</h2>
-        @if (Session('status'))
-            <span class="notify">{{ Session('status') }}</span>
-        @endif
+        
+        @include('includes.flash-message');
+
         <div class="searchbar">
             <form action="">
                 <input type="text" placeholder="Search..." name="search" />
@@ -19,10 +19,9 @@
         </div>
         <div class="categories">
             <ul>
-                <li><a href="">Health</a></li>
-                <li><a href="">Entertainment</a></li>
-                <li><a href="">Sports</a></li>
-                <li><a href="">Nature</a></li>
+                @foreach ($categories as $category)
+                    <li><a href="{{route('blog.index',['category'=>$category->name])}}">{{ $category->name }}</a></li>
+                @endforeach
             </ul>
         </div>
         <section class="cards-blog latest-blog">
@@ -33,7 +32,7 @@
                         @if (auth()->user()->id == $post->user->id)
                             <div class="post-buttons">
                                 <a href="{{ route('post.edit', $post) }}">Edit</a>
-                                <form action="{{ route('post.destroy',$post) }}" method="POST">
+                                <form action="{{ route('post.destroy', $post) }}" method="POST">
                                     @csrf
                                     @method('delete')
                                     <input type="submit" value="Delete">
@@ -50,13 +49,13 @@
                         <a href="{{ route('post.show', $post) }}">{{ $post->title }}</a>
                     </h4>
                 </div>
-                @empty
+            @empty
                 <p>Sorry, the post you're looking does not exists.</p>
             @endforelse
         </section>
 
         <!-- pagination -->
-        {{$posts->links('pagination::default')}}        
+        {{ $posts->links('pagination::default') }}
         <br>
     </main>
 @endsection

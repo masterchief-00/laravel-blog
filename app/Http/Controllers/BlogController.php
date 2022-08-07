@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -63,12 +64,21 @@ class BlogController extends Controller
         $request->validate([
             'title' => 'required',
             'image' => 'required|image',
-            'body' => 'required'
+            'body' => 'required',
+            'category_id' => 'required'
         ]);
-        $postId = Post::latest()->take(1)->first()->id;
+
+        if (Post::all()->count() > 0) {
+            $postId = Post::latest()->take(1)->first()->id;
+        } else {
+            $postId = 1;
+        }
+
+
         $title = $request->input('title');
         $slug = Str::slug($title, '-') . '-' . $postId + 1;
         $user_id = Auth::user()->id;
+        $category_id = $request->input('category_id');
         $body = $request->input('body');
 
         //file upload
@@ -77,6 +87,7 @@ class BlogController extends Controller
         $post->title = $title;
         $post->slug = $slug;
         $post->user_id = $user_id;
+        $post->category_id = $category_id;
         $post->body = $body;
         $post->imagePath = $imagePath;
         $post->save();
@@ -85,24 +96,28 @@ class BlogController extends Controller
     }
     function create()
     {
-        return view('blogPost.create-blog-post');
+        $categories = Category::all();
+        return view('blogPost.create-blog-post', compact('categories'));
     }
     function index(Request $request)
     {
+        $categories = Category::all();
         if ($request->search) {
             $searchQuery = '%' . $request->search . '%';
             $posts = Post::where('title', 'like', $searchQuery)
                 ->orWhere('body', 'like', $searchQuery)->latest()->paginate(4);
-        }
-        else
-        {
+        } elseif ($request->category) {
+            $posts = Category::where('name', $request->category)->firstOrFail()->posts()->paginate(4)->withQueryString();
+        } else {
             $posts = Post::latest()->paginate(4);
-        }        
-        return view('blogPost.blog', compact('posts'));
+        }
+        return view('blogPost.blog', compact('posts', 'categories'));
     }
-    function show($slug)
+    function show(Post $post)
     {
-        $post = Post::where('slug', $slug)->first();
-        return view('blogPost.blog-post', compact('post'));
+        $category = $post->category;
+
+        $relatedPosts = $category->posts()->where('id', '!=', $post->id)->latest()->take(3)->get();
+        return view('blogPost.blog-post', compact('post', 'relatedPosts'));
     }
 }
