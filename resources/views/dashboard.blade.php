@@ -16,8 +16,8 @@
 
                         <div class="dashboard">
                             <a href="{{ route('post.create') }}">Create Post</a>
-                            <a href="#">Create Category</a>
-                            <a href="#">Categories List</a>
+                            <a href="{{ route('categories.create') }}">Create Category</a>
+                            <a href="{{ route('categories.index') }}">Categories List</a>
                         </div>
                     </div>
                 </div>

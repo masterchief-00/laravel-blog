@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
@@ -47,5 +48,8 @@ Route::put('/blog/update/{post}',[[BlogController::class,'update']])->name('post
 Route::post('/blog/store',[BlogController::class,'store'])->name('post.store');
 
 Route::delete('/blog/delete/{post}',[BlogController::class,'destroy'])->name('post.destroy');
+
+
+Route::resource('/categories', CategoryController::class);
 
 require __DIR__ . '/auth.php';
